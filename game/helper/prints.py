@@ -11,8 +11,8 @@ def printstats(person):
         social = ", " + ", ".join(categories)
 
     print(
-        f"Name: {person.name} "
-        f"Personality: {person.temperment}",
+        f"Name: {person.name}, "
+        f"Personality: {person.temperment}"
         f"{social}, "
         f"Money: {person.money}"
     )

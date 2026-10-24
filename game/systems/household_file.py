@@ -143,6 +143,7 @@ def create_sim():
         age = int(input("What is your sim's age? "))
 
     sim = Person(name, sex, temperment = randomizer.randomizetemperment(), gender=gender, age=age)
+    sim.set_category(social_constructs.gender, gender)
     return sim
 
 def create_household(households):
