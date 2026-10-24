@@ -1,10 +1,9 @@
-import useful.randomizer as randomizer
-import useful.prints as prints
+import helper.prints as prints
 import systems.save_file as save_file
 import json
 import os
-import social_constructs
-
+import helper.randomizer as randomizer
+import systems.social_constructs as social_constructs
 global households, household, current_sim
 households = []
 current_sim = None
@@ -108,13 +107,13 @@ class Person:
         if role in self.social_roles:
             self.social_roles.remove(role)
 
-    def add_social_construct(self, category):
-        if category not in self.social_constructs:
-            self.social_constructs.append(category)
+    def add_social_construct(self, construct):
+        if construct not in self.social_constructs:
+            self.social_constructs.append(construct)
 
-    def remove_social_construct(self, category):
-        if category in self.social_constructs:
-            self.social_constructs.remove(category)
+    def remove_social_construct(self, construct):
+        if construct in self.social_constructs:
+            self.social_constructs.remove(construct)
 
     def go_to_work(self, hours_worked=8):
         if self.job:
@@ -244,11 +243,11 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
             "          What shall we do today?\n"
             "\n"
             "          [A] ✿  Have Baby\n"
-            "          [B] ❀  Learn Skill\n"
             "          [C] ❋  Fish\n"
             "          [D] ♡  Create a Sim\n"
             "          [E] ⚝  Switch/Create Household\n"
             "          [F] ✎  Notes\n"
+            "          [G]     Assign Social Category\n"
             "\n"
             "          Type END to leave the game.\n"
             "\n"
@@ -261,10 +260,10 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
             break
 
         elif answer == "A":
-            prints.print_households()
-            current_sim = switchsim(active_household)
-            prints.print_households()
-            partner_sim = switchsim(active_household)
+            prints.print_households(households)
+            current_sim = switchsim(active_household, households)
+            prints.print_households(households)
+            partner_sim = switchsim(active_household, households)
 
             if partner_sim is not None and partner_sim is not current_sim:
                 current_sim.make_baby(partner_sim)
@@ -272,12 +271,12 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
                 print("Choose a different Sim as the other parent.")
 
         elif answer == "C":
-            prints.print_households()
+            prints.print_households(households)
             if current_sim is None:
                 print("Select a Sim first.")
                 continue
 
-            current_sim = switchsim(active_household)
+            current_sim = switchsim(active_household, households)
 
             if current_sim is not None:
                 activities.fish(current_sim)
@@ -296,13 +295,25 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
                 active_household.members[0]
             )
 
-        elif answer == "F":
-            sim.update_notes()
-
         elif answer == "G":
-            prints.print_households()
-            current_sim = switchsim(active_household)
-            current_sim.add_social_category(social_category.gender)
+            prints.print_households(households)
+            current_sim = switchsim(active_household, households)
+
+            if current_sim is None:
+                continue
+
+            print("\nWhich social construct would you like to assign?")
+            print("[A] Gender")
+
+            choice = input("> ").strip().upper()
+
+            if choice == "A":
+                current_sim.add_social_construct(social_constructs.gender)
+                current_sim.add_social_construct(social_constructs.gender)
+                save_file.save_household(current_sim.household)
+
+            else:
+                print("Invalid choice.")
 
         else:
             print("Invalid choice. Please select A-F or END.")

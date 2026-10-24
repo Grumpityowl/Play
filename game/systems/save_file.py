@@ -39,7 +39,8 @@ def load_household(save_file=SAVE_FILE):
             )
 
         person.money = person_data.get("money", 0)
-
+        person.social_constructs = [getattr(household_file.social_constructs, name)
+                            for name in person_data.get("social_constructs", [])if hasattr(household_file.social_constructs, name)]
         household.members.append(person)
         person.household = household
 
@@ -60,44 +61,8 @@ def save_household(household):
                 "gender": person.gender,
                 "age": person.age,
                 "temperment": person.temperment,
-                "notes": person.notes,
+                "social_constructs": [construct.name for construct in person.social_constructs],                "notes": person.notes,
                 "money": person.money,
-                "mana": getattr(person, "mana", 0),
-                "school_year": getattr(person, "school_year", None),
-                "magic_season": getattr(person, "magic_season", None),
-            }
-            for person in household.members
-        ],
-    }
-
-    with open(household.save_file, "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
-
-
-def save_active_household(household):
-    with open(ACTIVE_HOUSEHOLD_FILE, "w", encoding="utf-8") as file:
-        json.dump({"save_file": household.save_file}, file, indent=4)
-
-
-def save_household(household):
-    if household is None:
-        return
-
-    data = {
-        "name": household.name,
-        "Notes": household.notes,
-        "members": [
-            {
-                "name": person.name,
-                "sex": person.sex,
-                "gender": person.gender,
-                "age": person.age,
-                "temperment": person.temperment,
-                "notes": person.notes,
-                "money": person.money,
-                "mana": getattr(person, "mana", 0),
-                "school_year": getattr(person, "school_year", None),
-                "magic_season": getattr(person, "magic_season", None),
             }
             for person in household.members
         ],
