@@ -3,6 +3,7 @@ import useful.prints as prints
 import systems.save_file as save_file
 import json
 import os
+import social_constructs
 
 global households, household, current_sim
 households = []
@@ -56,8 +57,7 @@ class Person:
         self.money = money
         self.job = job
         self.household = household
-        self.social_categories = []
-        self.skills = []
+        self.social_constructs = []
         self.social_roles = []
         self.family = []
         self.children = []
@@ -107,6 +107,14 @@ class Person:
     def remove_social_role(self, role):
         if role in self.social_roles:
             self.social_roles.remove(role)
+
+    def add_social_construct(self, category):
+        if category not in self.social_constructs:
+            self.social_constructs.append(category)
+
+    def remove_social_construct(self, category):
+        if category in self.social_constructs:
+            self.social_constructs.remove(category)
 
     def go_to_work(self, hours_worked=8):
         if self.job:
@@ -264,6 +272,7 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
                 print("Choose a different Sim as the other parent.")
 
         elif answer == "C":
+            prints.print_households()
             if current_sim is None:
                 print("Select a Sim first.")
                 continue
@@ -289,6 +298,11 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
 
         elif answer == "F":
             sim.update_notes()
+
+        elif answer == "G":
+            prints.print_households()
+            current_sim = switchsim(active_household)
+            current_sim.add_social_category(social_category.gender)
 
         else:
             print("Invalid choice. Please select A-F or END.")

@@ -1,4 +1,3 @@
-import aus.boy_witch.boy_witch as boy_witch
 
 class World:
     def __init__(self, name = None, school_rules = None, work_rules = None, marriage_rules = None, age_rules = None, fantasy_calendar = None, holiday_rules = None, economy_rules = None, social_roles = None, daily_life = None):

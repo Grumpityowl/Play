@@ -1,7 +1,13 @@
 def printstats(person):
-    print(f"Name: {person.name} Gender: {person.gender}, Personality: {person.temperment}, Money: {person.money}")
+    social = f", Social Category: {person.social_category}" if person.social_category is not None else ""
 
-
+    print(
+        f"Name: {person.name} "
+        f"Gender: {person.gender}, "
+        f"Personality: {person.temperment}"
+        f"{social}, "
+        f"Money: {person.money}"
+)
 
 def print_family(person):
         print(f"Name: {person.name}")

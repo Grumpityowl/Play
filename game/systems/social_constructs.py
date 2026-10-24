@@ -4,8 +4,7 @@
 ## while social roles are more circumstantial and can change over time. Social categories are often assigned at birth or based on inherent characteristics, while social roles are typically acquired through life experiences, choices, and societal expectations.
 ## While the category nine is acquired when you get your magic powers, it is still a category that defines your identity in the magical world. It is not a role that you can easily change or step out of, but rather a fundamental aspect of who you are as a witch.
    
-
-class Social_Category:
+class Social_Constructs:
     def __init__(self, name):
         self.name = name
         self.restrictions = []
@@ -27,7 +26,7 @@ class Social_Category:
                 return True
         return False
 
-    
-gender = Social_Category("Gender")
-youth = Social_Category("Youth")
+
+gender = Social_Constructs("Gender")
+youth = Social_Constructs("Youth")
 
