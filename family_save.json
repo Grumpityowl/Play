@@ -1,0 +1,17 @@
+{
+    "name": "jngdfj",
+    "Notes": null,
+    "members": [
+        {
+            "name": "Rodrick",
+            "sex": "Male",
+            "gender": "Male",
+            "age": 29,
+            "temperment": "Fearless",
+            "social_categories": {
+                "Gender": "Male"
+            },
+            "money": 0
+        }
+    ]
+}

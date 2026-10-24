@@ -60,6 +60,9 @@ def give_category_to_sim(current_sim):
     category = find_category(construct)
     assign_category(current_sim, category)
 
+
+
+
 # Define your constructs
 gender = SocialConstruct("Gender")
 
@@ -84,3 +87,14 @@ all_constructs = {
     "Gender": gender,
     "Soul Type": soul_type,
 }
+
+def convert_input_to_gender(sprinkles):
+    sprinkles = sprinkles.strip().lower()
+
+    for name, category in gender.categories.items():
+        if name.lower() == sprinkles:
+            return category
+
+    return None
+   # else:
+      #  category = gender.categories[Nonbinary]

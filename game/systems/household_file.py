@@ -135,15 +135,19 @@ def create_sim():
     if name.lower() == "generic":
         name = "Dawn Moonburrow"
         sex = "Female"
-        gender = "Female"
+        sprinkles = "Female"
         age = 18
     else:
         sex = input("What is your sim's sex? ").strip()
-        gender = input("What is your sim's gender? ").strip()
+        sprinkles = input("What is your sim's gender? ").strip().capitalize()
         age = int(input("What is your sim's age? "))
 
-    sim = Person(name, sex, temperment = randomizer.randomizetemperment(), gender=gender, age=age)
-    sim.set_category(social_constructs.gender, gender)
+        category = social_constructs.convert_input_to_gender(sprinkles)
+        sim = Person(name, sex, temperment = randomizer.randomizetemperment(), age=age)
+        if category is not None:
+            sim.set_category(social_constructs.gender, category)
+        else:
+            print("That gender doesn't exist!")
     return sim
 
 def create_household(households):
