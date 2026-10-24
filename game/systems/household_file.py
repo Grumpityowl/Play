@@ -23,27 +23,8 @@ class Household:
         self.members.append(person)
         person.household = self
 
-def find_household(household, households):
-    for X in households:
-        print(household.name)
-    print("A. New Household")
-
-    name = input("Which household do you want? (Type A to get their own household)")
-    if name.lower() == "a":
-        meow = input("What would you like to name your household? ").strip()
-        household = Household(meow)
-        households.append(household)
-        return household
-
-    elif household.name.lower() == name.lower():
-        return household
-    
-    else:
-        print(f"Could not find a household named {name}.")
-        return None
-
 class Person:
-    def __init__(self, name, sex, temperment, gender=None, age=18, job=None, place_of_work=None, money=0, household=None, notes = None):
+    def __init__(self, name, sex, temperment, gender=None, age=18, job=None, place_of_work=None, money=0, household=None, assigned_task=None, notes = None):
         self.name = name
         self.sex = sex
         self.temperment = temperment
@@ -54,6 +35,7 @@ class Person:
         self.job = job
         self.household = household
         self.social_categories = {}
+        self.assigned_task = assigned_task
         self.social_roles = []
         self.family = []
         self.children = []
@@ -170,6 +152,22 @@ def create_household(households):
     save_file.save_active_household(household)
 
     return household
+
+def find_household(households):
+    for household in households:
+        print(household.name)
+    print("A. New Household")
+
+    name = input("Which household do you want? (Type A to get their own household) ")
+    if name.lower() == "a":
+        household = create_household(households)
+        return household
+
+    for household in households:
+        if household.name.lower() == name.lower():
+            return household
+
+
 
 def find_sim(name, households):
     for household in households:

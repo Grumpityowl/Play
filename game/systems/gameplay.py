@@ -71,14 +71,14 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
 
         elif answer == "D":
             sim = household_file.create_sim()
-            household = household_file.find_household(active_household, households)
+            household = household_file.find_household(households)
             household.add_member(sim)
 
             if sim is not None:
                 current_sim = sim
 
         elif answer == "E":
-            save_file.manage_households(households)
+            save_file.manage_households()
             current_sim = (
                 active_household.members[0]
             )
@@ -99,3 +99,102 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
 
     return current_sim
 
+
+def god_mode(current_sim, active_household, world_name, households, household):
+    while True:
+        prints.print_World(household, world_name, households)
+        answer = input(
+            "          What shall we do today?\n"
+            "\n"
+            "          [A] ✿  Have Baby\n"
+            "          [B] ✿  Assign Sim to Gather Resources\n"
+            "          [C] ❋  Enter Sim Mode \n"
+            "          [D] ♡  Create a Sim\n"
+            "          [E] ⚝  Switch/Create Household\n"
+            "          [F] ✎  Notes\n"
+            "          [G]     Assign Social Category\n"
+            "\n"
+            "          Type END to leave the game.\n"
+            "\n"
+            "      ──────── ⋆｡°✩°｡⋆ ────────\n"
+            "\n"
+            "          Cast your choice: "
+        ).strip().upper()
+        
+        if answer == "END":
+            break
+
+        elif answer == "A":
+            prints.print_households(households)
+            current_sim = household_file.switchsim(active_household, households)
+            prints.print_households(households)
+            partner_sim = household_file.switchsim(active_household, households)
+
+            if partner_sim is not None and partner_sim is not current_sim:
+                current_sim.make_baby(partner_sim)
+            else:
+                print("Choose a different Sim as the other parent.")
+
+        elif answer == "C":
+            sim_mode(household, world_name, households, active_household)
+
+        elif answer == "D":
+            sim = household_file.create_sim()
+            household = household_file.find_household(households)
+            household.add_member(sim)
+
+            if sim is not None:
+                current_sim = sim
+
+        elif answer == "E":
+            save_file.manage_households()
+            current_sim = (
+                active_household.members[0]
+            )
+
+        elif answer == "G":
+            prints.print_households(households)
+            current_sim = household_file.switchsim(active_household, households)
+
+            if current_sim is None:
+                continue
+
+            social_constructs.give_category_to_sim(current_sim)
+            save_file.save_household(current_sim.household)
+
+
+        else:
+            print("Invalid choice. Please select A-F or END.")
+
+    return current_sim
+
+def sim_mode(household, world_name, households, active_household):
+    while True:
+        prints.print_World(household, world_name, households)
+        answer = input(
+                "          What shall we do today?\n"
+                "\n"
+                "          [A] ✿  Have Baby\n"
+                "          [B] ❋  Fish \n"
+                "          [C] ♡  God Mode \n"
+                "\n"
+                "          Type END to leave the game.\n"
+                "\n"
+                "      ──────── ⋆｡°✩°｡⋆ ────────\n"
+                "\n"
+                "          Cast your choice: "
+            ).strip().upper()
+
+        if answer == "C":
+            prints.print_households(households)
+            current_sim = household_file.switchsim(active_household, households)
+
+            if current_sim is None:
+                print("Select a Sim first.")
+                continue
+
+            if current_sim is not None:
+                gather_resources(person)
+
+def gather_resources(person):
+    ...

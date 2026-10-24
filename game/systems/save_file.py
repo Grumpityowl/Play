@@ -109,52 +109,66 @@ def get_active_save_file():
             pass
     return SAVE_FILE
 
-def manage_households(households):
-    global household_file, current_sim
 
-    while True:
-        print("\n══════ HOUSEHOLD MANAGER ══════")
-        print("[B] Create a new household")
-        print("[C] Go back")
-        
-        choice = input("> ").upper()
+def manage_households():
+    print("\n══════ HOUSEHOLD MANAGER ══════")
+    print("[A] Add a person to an existing household")
+    print("[B] Create a new household")
+    print("[C] Go back")
 
-        if choice == "B":
-            name = input("What is the new household's name? ").strip()
+    choice = input("> ").upper()
 
-            if not name:
-                print("Please enter a name.")
-                continue
+    if choice == "A":
+        # Show the existing households
+        for household in household_file.households:
+            print(household.name)
 
-            filename_name = "".join(
-                c.lower() if c.isalnum() else "_"
-                for c in name
-            ).strip("_")
+        name = input("Which household? ")
 
-            if not filename_name:
-                filename_name = "world"
+        # Find the chosen household
+        household = None
+        for home in household_file.households:
+            if home.name.lower() == name.lower():
+                household = home
+                break
 
-            filename = f"household_{filename_name}.json"
-            counter = 2
-
-            while os.path.exists(filename):
-                filename = f"household_{filename_name}_{counter}.json"
-                counter += 1
-
-            household = household_file.Household(name, save_file=filename)
-            households.append(household)
-            sim = household_file.create_sim()
-            household.add_member(sim)
-            save_household(household)
-            save_active_household(household)
-
-            print(f"Created {name}!")
-            print(f"Save file: {filename}") 
-            print("Created a new household!")
+        if household is None:
+            print("Household not found!")
             return
 
-        elif choice == "C":
+        # Create a person and add them
+        sim = household_file.create_sim()
+        household.add_member(sim)
+        save_household(household)
+
+        print(f"Added {sim.name} to {household.name}!")
+
+    elif choice == "B":
+        name = input("Name your new household: ").strip()
+
+        if not name:
+            print("Please enter a name.")
             return
 
-        else:
-            print("Invalid choice.")
+        filename = name.lower().replace(" ", "_") + ".json"
+
+        household = household_file.Household(
+            name,
+            save_file=filename
+        )
+
+        sim = household_file.create_sim()
+        household.add_member(sim)
+
+        household_file.households.append(household)
+
+        save_household(household)
+        save_active_household(household)
+
+        print(f"Created {household.name}!")
+
+    elif choice == "C":
+        return
+
+    else:
+        print("Invalid choice!")

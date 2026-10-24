@@ -57,6 +57,7 @@ def print_World(household, world_name, households):
 
         for person in household.members:
             printstats(person)
+            total_wealth += person.money
 
     print("\n═════════════════════════")
 

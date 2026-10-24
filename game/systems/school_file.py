@@ -1,7 +1,7 @@
-import useful.generic as generic
+from systems import world_file
 
-familiar_witch_school = generic.World("Litte Witch Academia Ripoff")
-mbti_school = generic.World("MBTI 2")
+familiar_witch_school = world_file.World("Litte Witch Academia Ripoff")
+mbti_school = world_file.World("MBTI 2")
 
 class School:
     def __init__(self, name):
