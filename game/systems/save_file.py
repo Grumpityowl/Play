@@ -31,24 +31,24 @@ def load_household(save_file=SAVE_FILE):
         age = person_data.get("age", 18)
         temperment = person_data.get("temperment", "blissful")
         person = household_file.Person(
-                name,
-                sex,
-                temperment = temperment,
-                gender=gender,
-                age=age,
-                notes=person_data.get("notes"),
+            name,
+            sex,
+            temperment = temperment,
+            gender=gender,
+            age=age,
+            notes=person_data.get("notes"),
             )
 
-    person.money = person_data.get("money", 0)
-    person.social_categories = {}
+        person.money = person_data.get("money", 0)
+        person.social_categories = {}
 
-    household.members.append(person)
-    person.household = household
+        household.members.append(person)
+        person.household = household
 
-    for construct_name, category_name in person_data.get(
-        "social_categories", {}
-    ).items():
-        construct = social_constructs.all_constructs.get(construct_name)
+        for construct_name, category_name in person_data.get(
+            "social_categories", {}
+            ).items():
+            construct = social_constructs.all_constructs.get(construct_name)
 
         if construct and category_name in construct.categories:
             person.set_category(

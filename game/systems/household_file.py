@@ -1,20 +1,17 @@
 import helper.prints as prints
-import systems.save_file as save_file
-import json
-import os
 import helper.randomizer as randomizer
 import systems.social_constructs as social_constructs
+
 global households, household, current_sim
 households = []
 current_sim = None
 household = None
 
-
 SAVE_FILE = "family_save.json"
 ACTIVE_HOUSEHOLD_FILE = "active_household.json"
 
 class Household:
-    def __init__(self, name, notes=None, save_file=save_file.SAVE_FILE):
+    def __init__(self, name, notes=None, save_file=SAVE_FILE):
         self.name = name
         self.members = []
         self.home = None
@@ -139,26 +136,39 @@ def create_sim():
         age = 18
     else:
         sex = input("What is your sim's sex? ").strip()
-        sprinkles = input("What is your sim's gender? ").strip().capitalize()
+        sprinkles = input("What is your sim's gender? ").strip()
         age = int(input("What is your sim's age? "))
 
-        category = social_constructs.convert_input_to_gender(sprinkles)
-        sim = Person(name, sex, temperment = randomizer.randomizetemperment(), age=age)
-        if category is not None:
-            sim.set_category(social_constructs.gender, category)
-        else:
-            print("That gender doesn't exist!")
+    sim = Person(
+        name,
+        sex,
+        temperment=randomizer.randomizetemperment(),
+        age=age
+    )
+
+    category = social_constructs.convert_input_to_gender(sprinkles)
+
+    if category is not None:
+        sim.set_category(social_constructs.gender, category)
+    else:
+        print("That gender doesn't exist!")
+
     return sim
 
 def create_household(households):
+    import systems.save_file as save_file
+
     name = input("What would you like to name your household? ").strip()
 
     household = Household(name)
     households.append(household)
+
     new_sim = create_sim()
     household.add_member(new_sim)
+
     save_file.save_household(household)
     save_file.save_active_household(household)
+
     return household
 
 def find_sim(name, households):
@@ -182,139 +192,3 @@ def switchsim(active_household, households):
     if new_sim is not None:
         print(f"\nYou are now playing as {new_sim.name}.")
         return new_sim
-
-def load_household(save_file=SAVE_FILE):
-    if not os.path.exists(save_file):
-        return None
-
-    try:
-        with open(save_file, "r", encoding="utf-8") as file:
-            data = json.load(file)
-    except (json.JSONDecodeError, OSError) as error:
-        print(f"Could not load {save_file}: {error}")
-        return None
-
-    household = Household(
-        data.get("name", "Unnamed Household"),
-        notes=data.get("Notes"),
-        save_file=save_file,
-    )
-
-    for person_data in data.get("members", []):
-        name = person_data.get("name", "Unnamed Sim")
-        sex = person_data.get("sex", "Female")
-        gender = person_data.get("gender", sex)
-        age = person_data.get("age", 18)
-        temperment = person_data.get("temperment", "blissful")
-        person = Person(
-                name,
-                sex,
-                temperment = temperment,
-                gender=gender,
-                age=age,
-                notes=person_data.get("notes"),
-            )
-
-
-        person.money = person_data.get("money", 0)
-
-        household.members.append(person)
-        person.household = household
-
-    return household
-
-def start_up():
-    active_household = save_file.load_household(save_file.get_active_save_file())
-    world_name = input("What would you like to name your world? ").strip()
-
-    if active_household == None:
-        household_name = input("What would you like to name your household? ")
-        active_household = Household(household_name)
-
-    if not active_household.members:
-        sim = create_sim()
-        active_household.add_member(sim)
-        save_file.save_household(active_household)
-        save_file.save_active_household(active_household)
-
-    if active_household is not None:
-        households.append(active_household)
-    current_sim = active_household.members[0]
-    print(f"Welcome back to {active_household.name}!")
-    gameplay_loop(current_sim, active_household, world_name, households, household)
-
-
-def gameplay_loop(current_sim, active_household, world_name, households, household):
-    while True:
-        prints.print_World(household, world_name, households)
-        answer = input(
-            "          What shall we do today?\n"
-            "\n"
-            "          [A] ✿  Have Baby\n"
-            "          [C] ❋  Fish\n"
-            "          [D] ♡  Create a Sim\n"
-            "          [E] ⚝  Switch/Create Household\n"
-            "          [F] ✎  Notes\n"
-            "          [G]     Assign Social Category\n"
-            "\n"
-            "          Type END to leave the game.\n"
-            "\n"
-            "      ──────── ⋆｡°✩°｡⋆ ────────\n"
-            "\n"
-            "          Cast your choice: "
-        ).strip().upper()
-        
-        if answer == "END":
-            break
-
-        elif answer == "A":
-            prints.print_households(households)
-            current_sim = switchsim(active_household, households)
-            prints.print_households(households)
-            partner_sim = switchsim(active_household, households)
-
-            if partner_sim is not None and partner_sim is not current_sim:
-                current_sim.make_baby(partner_sim)
-            else:
-                print("Choose a different Sim as the other parent.")
-
-        elif answer == "C":
-            prints.print_households(households)
-            if current_sim is None:
-                print("Select a Sim first.")
-                continue
-
-            current_sim = switchsim(active_household, households)
-
-            if current_sim is not None:
-                activities.fish(current_sim)
-
-        elif answer == "D":
-            sim = create_sim()
-            household = find_household(active_household, households)
-            household.add_member(sim)
-
-            if sim is not None:
-                current_sim = sim
-
-        elif answer == "E":
-            save_file.manage_households(households)
-            current_sim = (
-                active_household.members[0]
-            )
-
-        elif answer == "G":
-            prints.print_households(households)
-            current_sim = switchsim(active_household, households)
-
-            if current_sim is None:
-                continue
-
-            social_constructs.give_category_to_sim(current_sim)
-            save_file.save_household(current_sim.household)
-
-
-        else:
-            print("Invalid choice. Please select A-F or END.")
-
-    return current_sim
