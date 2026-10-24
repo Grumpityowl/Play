@@ -1,13 +1,13 @@
 {
-    "name": "jngdfj",
+    "name": "jjkdsl",
     "Notes": null,
     "members": [
         {
-            "name": "Rodrick",
-            "sex": "Male",
-            "gender": "Male",
+            "name": "Moon",
+            "sex": "Female",
+            "gender": "Female",
             "age": 29,
-            "temperment": "Fearless",
+            "temperment": "Perceptive",
             "social_categories": {
                 "Gender": "Male"
             },

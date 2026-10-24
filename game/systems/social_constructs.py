@@ -1,8 +1,3 @@
-## social roles are for roles you are currently fulfilling. Such as mother, father, priest, kidnapped, master, doctor, student
-## social category is what you are. Ex: Female, white, child, american
-## social category is deeply salient to your identity, 
-## while social roles are more circumstantial and can change over time. Social categories are often assigned at birth or based on inherent characteristics, while social roles are typically acquired through life experiences, choices, and societal expectations.
-## While the category nine is acquired when you get your magic powers, it is still a category that defines your identity in the magical world. It is not a role that you can easily change or step out of, but rather a fundamental aspect of who you are as a witch.
 
 class SocialConstruct:
     def __init__(self, name):
@@ -72,6 +67,8 @@ gender.add_category(Male)
 Female = SocialCategory("Female")
 gender.add_category(Female)
 
+Nonbinary = SocialCategory("Nonbinary")
+gender.add_category(Nonbinary)
 
 soul_type = SocialConstruct("Soul Type")
 
@@ -95,6 +92,4 @@ def convert_input_to_gender(sprinkles):
         if name.lower() == sprinkles:
             return category
 
-    return None
-   # else:
-      #  category = gender.categories[Nonbinary]
+        continue
