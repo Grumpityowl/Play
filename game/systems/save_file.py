@@ -39,8 +39,7 @@ def load_household(save_file=SAVE_FILE):
             )
 
         person.money = person_data.get("money", 0)
-        person.social_constructs = [getattr(household_file.social_constructs, name)
-                            for name in person_data.get("social_constructs", [])if hasattr(household_file.social_constructs, name)]
+        person.social_constructs = person_data.get("social_constructs", [])
         household.members.append(person)
         person.household = household
 
