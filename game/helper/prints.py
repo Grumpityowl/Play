@@ -1,16 +1,22 @@
+
 def printstats(person):
-    if person.social_constructs: #has anything in it
-        ribbit = person.social_constructs[0] if person.social_constructs else None        
-        social = f", Social Category: {ribbit}"
-    else:
-        social = ""
+    social = ""
+
+    if person.social_categories:
+        categories = []
+
+        for construct_name, category in person.social_categories.items():
+            categories.append(f"{construct_name}: {category.name}")
+
+        social = ", " + ", ".join(categories)
+
     print(
         f"Name: {person.name} "
-        f"Gender: {person.gender}, "
-        f"Personality: {person.temperment}"
+        f"Personality: {person.temperment}",
         f"{social}, "
         f"Money: {person.money}"
-)
+    )
+
 
 def print_family(person):
         print(f"Name: {person.name}")

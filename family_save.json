@@ -1,5 +1,5 @@
 {
-    "name": "Ribbit",
+    "name": "jejf",
     "Notes": null,
     "members": [
         {
@@ -7,11 +7,10 @@
             "sex": "Female",
             "gender": "Female",
             "age": 18,
-            "temperment": "Free Spirit",
-            "social_constructs": [
-                "Gender"
-            ],
-            "notes": null,
+            "temperment": "Eager",
+            "social_categories": {
+                "Gender": "Female"
+            },
             "money": 0
         }
     ]

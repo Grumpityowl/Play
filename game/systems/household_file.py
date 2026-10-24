@@ -56,7 +56,7 @@ class Person:
         self.money = money
         self.job = job
         self.household = household
-        self.social_constructs = []
+        self.social_categories = {}
         self.social_roles = []
         self.family = []
         self.children = []
@@ -107,13 +107,16 @@ class Person:
         if role in self.social_roles:
             self.social_roles.remove(role)
 
-    def add_social_construct(self, construct):
-        if construct not in self.social_constructs:
-            self.social_constructs.append(construct)
+    def set_category(self, construct, category):
+        if category.name not in construct.categories:
+            raise ValueError(
+                f"{category.name} is not a category "
+                f"of {construct.name}"
+            )
+        self.social_categories[construct.name] = category
 
-    def remove_social_construct(self, construct):
-        if construct in self.social_constructs:
-            self.social_constructs.remove(construct)
+    def get_category(self, construct):
+        return self.social_categories.get(construct.name)
 
     def go_to_work(self, hours_worked=8):
         if self.job:
@@ -140,7 +143,6 @@ def create_sim():
         age = int(input("What is your sim's age? "))
 
     sim = Person(name, sex, temperment = randomizer.randomizetemperment(), gender=gender, age=age)
-    
     return sim
 
 def create_household(households):
@@ -207,6 +209,7 @@ def load_household(save_file=SAVE_FILE):
                 age=age,
                 notes=person_data.get("notes"),
             )
+
 
         person.money = person_data.get("money", 0)
 
@@ -302,18 +305,9 @@ def gameplay_loop(current_sim, active_household, world_name, households, househo
             if current_sim is None:
                 continue
 
-            print("\nWhich social construct would you like to assign?")
-            print("[A] Gender")
+            social_constructs.give_category_to_sim(current_sim)
+            save_file.save_household(current_sim.household)
 
-            choice = input("> ").strip().upper()
-
-            if choice == "A":
-                current_sim.add_social_construct(social_constructs.gender)
-                current_sim.add_social_construct(social_constructs.gender)
-                save_file.save_household(current_sim.household)
-
-            else:
-                print("Invalid choice.")
 
         else:
             print("Invalid choice. Please select A-F or END.")

@@ -1,6 +1,7 @@
 import json
 import os
 import systems.household_file as household_file
+import systems.social_constructs as social_constructs
 
 SAVE_FILE = "family_save.json"
 ACTIVE_HOUSEHOLD_FILE = "active_household.json"
@@ -38,10 +39,27 @@ def load_household(save_file=SAVE_FILE):
                 notes=person_data.get("notes"),
             )
 
-        person.money = person_data.get("money", 0)
-        person.social_constructs = person_data.get("social_constructs", [])
-        household.members.append(person)
-        person.household = household
+    person.money = person_data.get("money", 0)
+    person.social_categories = {}
+
+    household.members.append(person)
+    person.household = household
+
+    for construct_name, category_name in person_data.get(
+        "social_categories", {}
+    ).items():
+        construct = social_constructs.all_constructs.get(construct_name)
+
+        if construct and category_name in construct.categories:
+            person.set_category(
+                construct,
+                construct.categories[category_name]
+            )
+        else:
+            print(
+                f"Could not restore social category "
+                f"{category_name!r} for {construct_name!r}."
+            )
 
     return household
 
@@ -60,7 +78,10 @@ def save_household(household):
                 "gender": person.gender,
                 "age": person.age,
                 "temperment": person.temperment,
-                "social_constructs": [construct.name for construct in person.social_constructs],                "notes": person.notes,
+                "social_categories": {
+                    construct_name: category.name
+                    for construct_name, category in person.social_categories.items()
+                },                
                 "money": person.money,
             }
             for person in household.members
